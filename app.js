@@ -1,14 +1,13 @@
 const chalk = require('chalk');
 const yargs = require('yargs');
-const note = require('./notes.js');
+const notes = require('./notes.js');
 
-//Customizzed yargs version
 yargs.version('1.1.0');
 
-//yargs command
+//create add command
 yargs.command({
-    command:'add',
-    describe:'Add a new note',
+    command: 'add',
+    describe: 'Add a new note',
     builder: {
         title: {
             describe: 'Note title',
@@ -16,61 +15,63 @@ yargs.command({
             type: 'string'
         },
         body: {
-            describe: 'Note body ',
-            demandOption : true,
+            describe: 'Note body',
+            demandOption: true,
             type: 'string'
         }
     },
-    
     handler(argv) {
-        note.addNote(argv.title, argv.body);
+        notes.addNote(argv.title, argv.body);
     }
-    
-});
+})
+
+//Create Remove Command
 yargs.command({
-    command:'remove',
-    describe:'remove a new note',
+    command: 'remove',
+    describe: 'Remove a note',
     builder: {
         title: {
-            describe: 'Note title',
+            describe: 'Mention title',
             demandOption: true,
             type: 'string'
-        },
+        }
     },
-    
     handler(argv) {
-        note.removeNote(argv.title);
+        notes.removeNotes(argv.title);
     }
-    
-});
+})
+
 yargs.command({
-    command:'list',
-    describe: 'List the notes',
-    builder: {
-        title: {
-            describe: 'List Note',
-            demandOption: false,
-            type: 'string'
-        },
-    },
+    command: 'list',
+    describe: 'list the notes',
     handler() {
-        note.listNotes();
+        const title = notes.listNotes();
+        if(title.length === 0) {
+            console.log(chalk.red.inverse('No Notes Found'));
+        } else {
+            console.log(chalk.blue.inverse('List of notes...'));
+            title.forEach((t) => {
+                console.log(t);
+            })
+        }
     }
-});
+})
+
 yargs.command({
     command: 'read',
-    describe: 'Read the note', 
+    describe: 'read the notes list',
     builder: {
         title: {
-            describe: 'Read Note',
+            describe: 'mention title',
             demandOption: true,
             type: 'string'
-        },
+        }
     },
-
     handler(argv) {
-        note.readNote(argv.title);
+        console.log(chalk.blue.inverse('Reading the Notes...'));
+        notes.readNotes(argv.title);
     }
 })
 
 yargs.parse();
+// console.log(yargs.argv)
